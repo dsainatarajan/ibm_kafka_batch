@@ -1,0 +1,44 @@
+#Stop all the prodcuer and consumer from previous exercise
+# connect to the container from another terminal
+# docker exec -it singlenodekafka_kafka_1 bash
+# create a topic named sampletopic2
+kafka-topics.sh --create --partitions 2 --replication-factor 1 --bootstrap-server localhost:9092 --topic sampletopic2
+
+# start a new terminal in a new window & start a new consumer belonging to consumer group group1
+kafka-console-consumer.sh --topic sampletopic2 --from-beginning --bootstrap-server localhost:9092 --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --group group1 
+
+# start a new terminal in a new window & start a new consumer belonging to same consumer group group1
+# connect to the container
+# docker exec -it singlenodekafka_kafka_1 bash
+kafka-console-consumer.sh --topic sampletopic2 --from-beginning --bootstrap-server localhost:9092 --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --group group1 
+
+# publish a few messages from producer
+kafka-console-producer.sh --bootstrap-server localhost:9092 --topic sampletopic2 --property "parse.key=true" --property "key.separator=;"
+>order1;{"prd":"redmi"}
+>order2;{"prd":"oppo"}
+>order1;{"prd":"iPhone"}
+>order3;{"prd":"redmi"}
+>order4;{"prd":"oppo"}
+>order5;{"prd":"iPhone"}
+>order5;{"prd":"oppo"}
+
+# start a new terminal in a new window & start a new consumer belonging to same consumer group group1
+# connect to the container
+docker exec -it singlenodekafka_kafka_1 bash
+kafka-console-consumer.sh --topic sampletopic2 --from-beginning --bootstrap-server localhost:9092 --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --group group1 
+# publish more messages, observe that one of the consumers in the group will be idle & will not receive any messages
+
+# stop one of the consumers in the group by Ctrl+C
+# publish new messages
+# oberve that existing 2 consumers will continue to consume as group
+
+# start the consumer that is stopped in the previous step
+# publish new messages
+>order3;{"prd":"redmi"}
+>order5;{"prd":"iPhone"}
+>order5;{"prd":"oppo"}
+# oberve that  one of the consumers in the group will be idle again & will not receive any further messages
+# publish new messages
+>order3;{"prd":"redmi"}
+>order5;{"prd":"iPhone"}
+
