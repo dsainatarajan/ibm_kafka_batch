@@ -1,0 +1,41 @@
+# Launch a command prompt
+cd Dowonloads/kafka-docker/singlenodekafka
+docker-compose up -d
+docker ps
+# both kafka & zookeeper should be lister
+docker exec -it singlenodekafka-kafka-1  bash
+
+# create a topic in kafka called demotopic1
+kafka-topics.sh --create --bootstrap-server localhost:9092 --partitions 2 --replication-factor 1 --topic demotopic1
+# output: Created topic demotopic1.
+
+kafka-topics.sh --list --bootstrap-server localhost:9092 
+
+# Start a producer
+kafka-console-producer.sh --bootstrap-server localhost:9092 --topic demotopic1
+>message1
+>Hello IBM
+>New message again
+
+# duplicate the terminal -> Duplicate putty : Username: alchemy, pwd: welcome
+docker exec -it  singlenodekafka-kafka-1  bash
+
+# Start a consumer
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic demotopic1 --from-beginning
+
+# Produce more messages on the producer tab, consumer should list the messages recently produced
+
+# duplicate the terminal -> Duplicate putty : Username: alchemy, pwd: welcome
+docker exec -it  singlenodekafka-kafka-1  bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 --topic demotopic1
+>New message1
+>New Hello IBM
+>New message again again
+
+# duplicate the terminal -> Duplicate putty : Username: alchemy, pwd: welcome
+docker exec -it  singlenodekafka-kafka-1  bash
+
+# Start a consumer
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic demotopic1 --from-beginning
+
+# Produce more messages on the producer tab, both consumer should list the messages recently produced
