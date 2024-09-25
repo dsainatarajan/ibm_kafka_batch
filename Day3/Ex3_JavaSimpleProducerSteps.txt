@@ -16,7 +16,7 @@ cd target/
 dir
 # notice the jar with the dependency
 # copy the jar with dependencies from host to the kafka1 container
-docker cp *-with-dependencies.jar multinodekafka-kafka1-1:/
+docker cp KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar multinodekafka-kafka1-1:/
 docker exec -it multinodekafka-kafka1-1 bash
 ls /
 # notice the jar
