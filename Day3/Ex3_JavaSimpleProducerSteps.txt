@@ -1,0 +1,40 @@
+# git clone https://github.com/dsainatarajan/kafkacode.git
+#sudo apt update
+#sudo apt install openjdk-17-jdk maven -y
+#java -version
+#mvn
+# mvn command should not give command not found
+
+# On a new terminal switch to the kafkacode folder
+cd $HOME/kafkacode
+Extact Here -> 1simple_producer.zip
+dir
+cd 1simple_producer/KafkaProducerDemo/
+# build the jar from source using maven
+mvn package
+cd target/
+dir
+# notice the jar with the dependency
+# copy the jar with dependencies from host to the kafka1 container
+docker cp *-with-dependencies.jar multinodekafka-kafka1-1:/
+docker exec -it multinodekafka-kafka1-1 bash
+ls /
+# notice the jar
+
+# create the topic
+kafka-topics.sh --create --bootstrap-server kafka1:9092 --partitions 3 --replication-factor 2 --topic first_topic
+
+# running the producer Jar
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+
+# start a kafka console consumer on another tab
+docker exec -it multinodekafka-kafka1-1 bash
+# start the consumer with metadata print option
+kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --from-beginning
+# notice the routing of message with & without key, observe the difference
+
+# run the producer few more times and observe the console consumer
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+
