@@ -1,4 +1,4 @@
-docker exec -it  multinodekafka-kafka-1 bash
+docker exec -it  multinodekafka-kafka1-1 bash
 
 kafka-topics.sh --create --bootstrap-server kafka1:9092 --replication-factor 2 --partitions 3 --topic testtopic1
 
@@ -22,7 +22,7 @@ cd $HOME/multinodekafka
 docker-compose ps
 # notice kafka3 container is in exited state
 
-docker exec -it  multinodekafka-kafka-1 bash
+docker exec -it  multinodekafka-kafka1-1 bash
 
 kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic1
 # Observe the difference between Replicas & ISR
@@ -39,7 +39,7 @@ docker start multinodekafka-kafka3-1
 docker-compose ps
 # notice kafka3 container is in running state again
 
-docker exec -it  multinodekafka-kafka-1 bash
+docker exec -it  multinodekafka-kafka1-1 bash
 
 kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic1
 # Observe the node that came back will still not get leadership of partition againe, it will only host the follower
