@@ -1,0 +1,54 @@
+docker exec -it  multinodekafka-kafka-1 bash
+
+kafka-topics.sh --create --bootstrap-server kafka1:9092 --replication-factor 2 --partitions 3 --topic testtopic1
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic1
+
+# --replication-factor 3 => 1 leader + 2 followers
+
+kafka-topics.sh --create --bootstrap-server kafka1:9092,kafka2:9092 --replication-factor 3 --partitions 3 --topic testtopic2
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic2
+
+# replication-factor 1
+kafka-topics.sh --create --bootstrap-server kafka1:9092,kafka2:9092 --replication-factor 1 --partitions 3 --topic testtopic3
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic3
+# exit to the host
+exit
+
+docker stop multinodekafka-kafka3-1
+cd $HOME/multinodekafka
+docker-compose ps
+# notice kafka3 container is in exited state
+
+docker exec -it  multinodekafka-kafka-1 bash
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic1
+# Observe the difference between Replicas & ISR
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic2
+# Observe the difference between Replicas & ISR
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic3
+# observe that Leader is none, but ISR still lists the broker
+
+# exit to host and start the 3rd container again
+exit
+docker start multinodekafka-kafka3-1
+docker-compose ps
+# notice kafka3 container is in running state again
+
+docker exec -it  multinodekafka-kafka-1 bash
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic1
+# Observe the node that came back will still not get leadership of partition againe, it will only host the follower
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic2
+# Observe the node that came back will still not get leadership of partition againe, it will only host the follower
+
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092,kafka2:9092 --topic testtopic3
+# observe that Leader was earlier none, that same partition which came back will become the leader again
+
+
