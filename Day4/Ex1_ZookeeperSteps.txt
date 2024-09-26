@@ -1,0 +1,40 @@
+# Exit to the host machine if shell is inside the container
+exit
+docker ps
+# connect to the zookeeper container
+docker exec -it multinodekafka-zookeeper-1 bash
+zkCli.sh 
+ls /
+ls /brokers
+ls /brokers/ids
+get /brokers/ids/1
+get /brokers/ids/2
+ls /brokers/topics
+ls /brokers/topics/testtopic1/partitions
+get /brokers/topics/testtopic1/partitions/0/state
+ls /cluster
+get /cluster/id
+# Every cluster when the first broker initializes, a new cluster ID will be generatoed
+quit
+# exit to the host from container
+exit
+docker stop multinodekafka-kafka2-1
+
+# switch to the zookeeper terminal, run below command
+docker exec -it multinodekafka-zookeeper-1 bash
+zkCli.sh 
+ls /brokers/ids
+quit
+exit
+# broker id 2 will no longer be listed
+docker start multinodekafka-kafka2-1
+
+# switch to the zookeeper terminal, run below command
+docker exec -it multinodekafka-zookeeper-1 bash
+zkCli.sh 
+ls /brokers/ids
+# broker id 2 should be listed again
+
+quit
+# exit to the host
+exit
