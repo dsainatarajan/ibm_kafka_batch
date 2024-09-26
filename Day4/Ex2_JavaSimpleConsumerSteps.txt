@@ -15,7 +15,7 @@ ls /
 # running the producer Jar
 java -jar simpleconsumer.jar
 
-# start a kafka console consumer on another tab
+# start a kafka java producer on another tab
 docker exec -it multinodekafka-kafka1-1 bash
 
 # notice the routing of message with & without key, observe the difference
@@ -23,6 +23,8 @@ docker exec -it multinodekafka-kafka1-1 bash
 java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 
+# start a kafka console consumer on another tab
+docker exec -it multinodekafka-kafka1-1 bash
 # running the producer Jar
 java -jar simpleconsumer.jar
 
