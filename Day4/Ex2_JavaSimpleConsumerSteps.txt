@@ -1,0 +1,31 @@
+exit
+# Exit to the host machine
+cd C:\\users\Admin\Downloads\kafkacode-main\kafkacode-main
+#  https://github.com/dsainatarajan/kafkacode.git
+dir
+cd 2simple_consumer\2simple_consumer\KafkaConsumerSimple
+mvn package
+cd target/
+docker cp ConsumerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar multinodekafka-kafka1-1:/simpleconsumer.jar
+
+docker exec -it multinodekafka-kafka1-1 bash
+ls /
+# notice the jar
+
+# running the producer Jar
+java -jar simpleconsumer.jar
+
+# start a kafka console consumer on another tab
+docker exec -it multinodekafka-kafka1-1 bash
+
+# notice the routing of message with & without key, observe the difference
+# run the producer few more times and observe the console consumer
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+
+# running the producer Jar
+java -jar simpleconsumer.jar
+
+# Switch to other terminal & run the producer again
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
