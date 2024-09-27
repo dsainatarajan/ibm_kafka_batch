@@ -1,0 +1,42 @@
+Single Node Setup:
+# 1. Install Java
+# Java 8 or Higher
+sudo apt-get update && sudo apt-get install openjdk-11-jdk wget -y
+# Download the Kafka Binaries
+wget https://archive.apache.org/dist/kafka/2.7.0/kafka_2.12-2.7.0.tgz
+ls 
+tar -xvf kafka_2.12-2.7.0.tgz
+ls 
+cd kafka_2.12-2.7.0/
+ls
+ls config
+# server.properties    zookeeper.properties
+cd $HOME
+sudo mv kafka_2.12-2.7.0 /usr/kafka
+nano .bashrc
+
+export KAFKA_HOME=/usr/kafka
+export PATH=$PATH:$KAFKA_HOME/bin
+
+
+Ctrl+O+Enter
+Ctrl+X
+exec bash
+zookeeper-server-start.sh -daemon /usr/kafka/config/zookeeper.properties
+jps
+# QuorumPeerMain
+kafka-server-start.sh -daemon /usr/kafka/config/server.properties
+jps
+# QuorumPeerMain & kafka
+
+kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic test1
+kafka-topics.sh --list --bootstrap-server localhost:9092 
+
+kafka-console-producer.sh --broker-list localhost:9092 --topic test1
+>msg1
+>msg2
+>msg3
+Ctrl+C
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test1 --from-beginning 
+

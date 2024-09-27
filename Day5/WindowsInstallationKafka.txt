@@ -1,0 +1,56 @@
+# Download the suitable version of kafka from Apache archive
+https://archive.apache.org/dist/kafka/
+# select the file which is the largest(100mb) from kafka archive folder
+# Extract the kafka zip file into a folder
+# copy the kafka extracted folder to C drive as
+c:\kafka
+# create a few data folders, 1 for kafka & 1 for zookeeper
+mkdir C:\kafka\data
+mkdir C:\kafka\data\zoo
+mkdir C:\kafka\data\kafka
+
+# you have edit the files in the config folder for zookeeper & kafka
+
+cd C:\kafka\config
+# open the zookeeper.properties file
+# edit the dataDir value as shown below in the zookeeper.properties file, save & close
+
+dataDir=c:\\kafka\\data\\zoo
+
+# open the server.properties file
+# edit the server.properties file for below values, save & close
+
+# below line has to be added
+advertised.listeners=PLAINTEXT://localhost:9092
+
+# below line has to be edited
+log.dirs=c:\\kafka\\data\\kafka
+
+# ensure java 11 or higher is installed & JAVA_HOME is set, JAVA_HOME/bin is added to the path variable
+# get into the bin\windows folder of kafka, run the below command on a command prompt
+
+cd C:\kafka\bin\windows
+
+start zookeeper-server-start.bat C:\kafka\config\zookeeper.properties
+
+start kafka-server-start.bat C:\kafka\config\server.properties
+
+kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic testtopic1
+
+kafka-topics.bat --list --bootstrap-server localhost:9092 --topic testtopic1
+
+kafka-console-producer.bat --topic testtopic1 --bootstrap-server localhost:9092
+>msg1
+>msg2
+>msg3
+
+# launch another command prompt
+cd C:\kafka\bin\windows
+
+.\kafka-console-consumer.bat --topic testtopic1 --from-beginning --bootstrap-server localhost:9092 --property "print.key=true" --property "print.offset=true"  --property "print.partition=true"
+# observe all the messages are received
+
+
+kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
+
+kafka-topics.bat --list --bootstrap-server localhost:9092 --topic testtopic1
