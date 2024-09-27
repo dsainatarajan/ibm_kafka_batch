@@ -1,0 +1,49 @@
+docker exec -it multinodekafka-kafka1-1 bash
+
+kafka-topics.sh --create --topic test1 --bootstrap-server kafka1:9092 --replication-factor 2 --partitions 6
+
+# List only single topic named "test1" (prints only topic name)
+kafka-topics.sh --list --bootstrap-server kafka1:9092 --topic test1
+
+# List all topics (prints only topic names)
+kafka-topics.sh --list --bootstrap-server kafka1:9092
+ 
+# Describe only single topic named "test1" (prints details about the topic)
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test1
+ 
+# Describe all topics (prints details about the topics)
+kafka-topics.sh --describe --bootstrap-server kafka1:9092
+
+# List info for topics which have under replicated count
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --under-replicated-partitions
+
+# on kafka broker 3 -> kafka3
+# bring down one broker
+exit
+docker stop multinodekafka-kafka3-1
+
+docker exec -it multinodekafka-kafka1-1 bash
+# on the kafka1 terminal
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --under-replicated-partitions
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic testtopic1   
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic testtopic1 --under-replicated-partitions
+# list only topics where some partitions are not available
+
+# List info for topics whose leader for a partition is not available
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --unavailable-partitions
+# leader=none
+
+# Create topic with specific number of partitions and/or replicas
+# If number of replication factor higher than the brokers, you will get error. " Replication factor: 3 larger than available brokers: 2."
+kafka-topics.sh --create --bootstrap-server kafka1:9092 --topic test3 --replication-factor 3 --partitions 3
+
+exit
+# start the broker 3 -> kafka3
+docker start multinodekafka-kafka3-1
+docker exec -it multinodekafka-kafka1-1 bash
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --unavailable-partitions
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --under-replicated-partitions
+# both above commands should produce blank output as all partitions in the cluster should be normal and healthy now
+
+

@@ -27,8 +27,6 @@ java -jar KafkaProducerDemo-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 # lag will not be 0
 kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --all-groups --describe
 
-# stop both the consumers & run the consumer group monitoring command again
-
 # list all consumer groups consuming from every topic
 kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --all-groups --list
 # Consumer list in the group will be blank
