@@ -1,0 +1,44 @@
+
+# Create topic with manual replica assignment 
+# Run on the putty inside the kafka container
+kafka-topics.sh --create --bootstrap-server kafka1:9092 --topic test4 --replica-assignment 1:2,3:2,3:1
+# Partition0: Brokers: 1:2	-> Leader 1
+# Partition1: Brokers: 3:2  -> Leader 3
+# Partition2: Brokers: 3:1  -> Leader 3
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test4
+# Notice the topic layout, broker 3 has 2 leader partitions(2,3)
+
+# Create topic with configuration override
+kafka-topics.sh --create --bootstrap-server kafka1:9092 --topic test5 --config min.insync.replicas=2
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test5
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test1
+# Increase number of partitions for topic
+kafka-topics.sh --alter --bootstrap-server kafka1:9092 --topic test1 --partitions 8
+  
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test1
+
+# Increase number of partitions with specific replica assignment
+kafka-topics.sh --alter --bootstrap-server kafka1:9092 --topic test4 --replica-assignment 1:2,3:2,3:1,2:1 --partitions 4
+
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test4
+
+ls /bitnami/kafka/data/
+# Delete topic named  testtopic3
+kafka-topics.sh --delete --bootstrap-server kafka1:9092 --topic  testtopic3
+ls /bitnami/kafka/data/
+
+# Identify if the topic testtopic3 is not listed
+kafka-topics.sh --list --bootstrap-server kafka1:9092 
+
+# Add new option or change exsiting option
+kafka-configs.sh --alter --bootstrap-server kafka1:9092 --entity-name test1 --entity-type topics --add-config cleanup.policy=compact
+ 
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test1 
+# Remove exsiting option
+kafka-configs.sh --alter --bootstrap-server kafka1:9092 --entity-name test1 --entity-type topics --delete-config cleanup.policy
+
+# observe the configs will be blank again
+kafka-topics.sh --describe --bootstrap-server kafka1:9092 --topic test1 
