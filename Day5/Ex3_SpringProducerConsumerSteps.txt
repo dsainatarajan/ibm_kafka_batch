@@ -30,7 +30,8 @@ java --add-opens java.base/java.lang=ALL-UNNAMED -jar -D springconsumer.jar
 docker exec -it multinodekafka-kafka1-1 bash
 
 java -jar --add-opens java.base/java.lang=ALL-UNNAMED -jar -D springproducer.jar
-ls /
+
+docker exec -it multinodekafka-kafka1-1 bash
 
 curl localhost:8080/kafka/producer?message=springdemo
 curl localhost:8080/kafka/producer?message=HelloKafka
