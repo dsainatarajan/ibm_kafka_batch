@@ -1,0 +1,29 @@
+# stop the existing console consumers by Ctrl+C
+# Launch a new command prompt
+Start -> cmd
+docker exec -it mvn bash
+cd /code/kafkacode
+rm -r 5advancede_consumer_manualcommit
+git pull origin main
+unzip 5advancede_consumer_manualcommit.zip
+cd 5advancede_consumer_manualcommit/5advancede_consumer_manualcommit/kafka-consumer/
+mvn package
+cd target
+ls
+
+java -jar *-jar-with-dependencies.jar 
+
+# on another terminal get into the container again
+docker exec -it mvn bash
+cd /code/kafkacode/5advancede_consumer_manualcommit/5advancede_consumer_manualcommit/kafka-consumer/target
+java -jar *-with-dependencies.jar 
+
+# on another terminal & start the jar
+docker exec -it mvn bash
+cd /code/kafkacode/4advance_producer/kafka-producer/target
+java -jar  *-jar-with-dependencies.jar first_topic
+
+# run the producer jar again to create new messages for the consumer to consume
+java -jar *-jar-with-dependencies.jar  first_topic
+java -jar *-jar-with-dependencies.jar  first_topic
+java -jar *-jar-with-dependencies.jar  first_topic
