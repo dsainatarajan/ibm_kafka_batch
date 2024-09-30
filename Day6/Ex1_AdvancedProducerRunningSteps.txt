@@ -1,7 +1,13 @@
+# Launch Docker => Start -> Docker Desktop
 # Launch a new command prompt: Start -> cmd -> Enter
-docker exec -it mvn bash
-cd /code/kafkacode
-# Extract the 4advance_producer.zip
+cd Downloads/kafka-docker/multinodekafka
+docker-compose up -d
+docker-compose ps
+# wait for a minute
+docker-compose up -d
+docker-compose ps
+# ensure all brokers are running
+# Extract the Downloads/kafkacode-main/kafkacode-main/4advance_producer.zip
 cd 4advance_producer/4advance_producer/kafka-producer/
 mvn package
 dir target
@@ -11,4 +17,19 @@ docker exec -it multinodekafka-kafka1-1 bash
 java -jar advancedproducer.jar first_topic
 # Observe the existing consumer jars, you will observe the records produced by the producer received
 
+
+# start a kafka console consumer on another tab
+docker exec -it multinodekafka-kafka1-1 bash
+# start the consumer with metadata print option
+kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --from-beginning
+
+
+# start a kafka console consumer on another tab
+docker exec -it multinodekafka-kafka1-1 bash
+# start the consumer with metadata print option
+kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --from-beginning
+
+# on the first terminal run the producer again
+
 java -jar advancedproducer.jar first_topic
+
