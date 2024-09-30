@@ -21,13 +21,13 @@ java -jar advancedproducer.jar first_topic
 # start a kafka console consumer on another tab
 docker exec -it multinodekafka-kafka1-1 bash
 # start the consumer with metadata print option
-kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --from-beginning
+kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --group newgrp --from-beginning
 
 
 # start a kafka console consumer on another tab
 docker exec -it multinodekafka-kafka1-1 bash
 # start the consumer with metadata print option
-kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --from-beginning
+kafka-console-consumer.sh --bootstrap-server kafka1:9092 --topic first_topic --property "print.key=true" --property "print.offset=true"  --property "print.partition=true" --group newgrp --from-beginning
 
 # on the first terminal run the producer again
 
