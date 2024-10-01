@@ -1,0 +1,40 @@
+# stop all the producers & consumers
+docker exec -it multinodekafka-kafka1-1 bash
+# create the input topic
+kafka-topics.sh --create --topic streaminput2 --bootstrap-server kafka1:9092 --replication-factor 2 --partitions 2
+# create the output topic
+kafka-topics.sh --create --topic transformoutput1 --bootstrap-server kafka1:9092 --replication-factor 2 --partitions 2
+kafka-topics.sh --list --bootstrap-server kafka1:9092
+
+# exit to the host
+# Download the git repository given below
+git clone https://github.com/dsainatarajan/kafkastreamsjava.git
+cd kafkastreamsjava-main/kafkastreamsjava-main
+# Extract the file KafkaStreamsTransforming.zip
+cd KafkaStreamsTransforming
+mvn package
+cd target
+dir
+docker cp KafkaStreamsTransform-0.0.1-SNAPSHOT-jar-with-dependencies.jar  multinodekafka-kafka1-1:/kafkastreamdemo.jar
+
+# launch a new terminal
+docker exec -it multinodekafka-kafka1-1 bash
+java -jar kafkastreamdemo.jar
+
+
+# launch a new terminal
+docker exec -it multinodekafka-kafka1-1 bash
+kafka-console-consumer.sh --topic transformoutput1 --from-beginning --bootstrap-server kafka1:9092 --group group1 --property "print.key=true" --property "print.offset=true"  --property "print.partition=true"
+
+
+# launch a new terminal
+docker exec -it multinodekafka-kafka1-1 bash
+kafka-console-producer.sh --topic streaminput2 --bootstrap-server kafka1:9092 --property "parse.key=true" --property "key.separator=:"
+# Publish messages from producer with key, consumer will receive them
+>order2:120
+>order1:500
+>order2:400
+>order3:100
+>order4:120
+>order5:300
+>order5:3000
