@@ -1,0 +1,32 @@
+# exit to the host machine
+exit
+cd Downloads/kafka-docker/multinodekafka
+docker-compose stop
+
+cd ./../confluentkafka
+docker-compose up -d
+# Wait for 2 minutes
+docker-compose up -d
+# Wait for 2 minutes
+docker-compose up -d
+docker-compose ps
+
+# Confluent control center runs on port 9021
+# Browser -> localhost:9021
+Controlcenter.cluster -> click the link
+
+Left menu: Brokers, Topics
+Topics -> Right Side -> Add Topic
+Topic Name: ibmdemo
+Number of Partitions: 2
+Create with Defaults
+Messages -> Producer a message -> Click Produce Button
+# Check the response
+# switch to the schema tab
+
+# switch to the Messages tab
+# Jumpt to offset: 0: Partition: 0
+#You will see the message produced
+# Jumpt to offset: 0: Partition: 1
+# blank response, because there is only one message which went to other partition
+
