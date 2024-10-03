@@ -1,0 +1,132 @@
+Day1:
+ToC Walkthrough
+Trainer Introduction	-> D Sai Natarajan, 15 Yrs exp
+General Instructions
+Labs		-> Unique lab provided for everyone
+Materials	-> All materials used during session will be shared
+Participants Introduction
+
+Session start
+
+Pre-requisites:
+Linux		-> Will be very essential
+Java		-> Will be very helpful
+Springboot	-> 2 exercises planned for spring
+Docker		-> will be nice to have
+SQL			-> 1 exercise
+
+No prior message queue knowledge is expected
+
+General Instructions:
+	Ask Questions as soon as you have, please dont wait for Q&A part
+	Feedback: Session pacing, Network issue
+	
+
+Participants Introduction
+
+Yrs, Domain, Message queue, Linux, Java, Spring, SQL, docker, kafka
+Special expectations
+
+Yrs:14+ Yrs, Domain:Retail, Manufacturing, Message queue: rabbitmq, kafka, activemq, Linux:Ubuntu, Centos, Java:14Yrs, Spring:10 yrs,microservice, SQL:14Yrs,mysql, docker:8 yrs, kafka:9Yrs, microservice & ETL
+
+Special expectations: Would like to know indepth working on kafka ecosystem
+Kafka Security for Both Producer and COnsumer using SSL or any authentication mechanism.
+Kafka bridges
+
+If you can provide Reactive Kafka with Spring boot
+To Understand the Event driven architecture in better way while developing Micro services
+Confluent cloud, Kafka Streams, Monitoring, Administratin, Installation, Support
+How Kafka will work with Spring WebFlux ?
+Kafka Security for Both Producer and COnsumer using SSL or any authentication mechanism. Need to co-related kafka with AWS Kenesis, How it works in Orchastration and Choreography pattern , Can it replace direct Synchronous call for all scenarios
+
+ 
+Kafka Introduction 
+Kafka Features 
+Kafka vs AMQP 
+Kafka Features 
+Kafka Real Use Cases
+Digital Software Transformation From Monolithic to 
+MicroServices to Serverless Applications 
+Event-Driven Architecture ( EDA )
+- MicroServices
+- Serverless
+- FaaS
+- Streaming
+- Event Sourcing
+- CQRS
+Reactive Manifesto
+Kafka Case Studies - MicroServices Log Analysis
+- Invoice Processing
+- Distributed Transaction Management with SAGA Pattern
+- Data Migration between databases
+Elements of Kafka [Consumer, Producer, Broker, ZooKeeper, 
+Cluster] 
+Kafka Architecture
+Kafka Overall Messaging Architecture 
+Kafka Streaming Architecture 
+Kafka Consumer and Producer Architecture 
+Kafka Persistence Architecture 
+Kafka Clusters 
+Kafka Consumer Workers Group
+Apache Kafka 
+Confluence Kafka Open Source 
+Confluence Kafka Enterprise 
+Java JDK 
+Kafka Setup 
+Zookeeper Configuration 
+Single Broker Configuration 
+Understanding build-in tools, Kafka server, test publisher, test 
+consumer 
+Configuration Kafka Single Node Broker 
+Start ZooKeeper 
+Start Kafka Server 
+Using Example console consumer and publisher 
+Broker, Consumer, Producer Configuration
+
+
+What is message queue
+Compare Kafka with other message queue
+Kafka Architecture: Terminologies, scalability, brokers, topics, partitions
+Kafka Demo: create topic, start a producer, publish messages, start consumer, consume messages
+
+Message Queues: Rabbitmq, Activemq, Zmq, IBM MQ, Kafka, Redis(queue), etc
+
+
+Direct synchronous communication
+Asynchronous communication with message queue
+
+
+Message queue simplifies the asynchronous communication between applications
+
+Terminologies:
+	1. Applications writing data into a queue is called Publisher
+	2. Applications reading data from a queue is called Subscriber
+	3. Messages are stored in a server application called Broker
+	4. Every record of data is called a message
+	5. Messages are stored in a sequence inside a Queue
+	6. Every message is tracked using a unique per message number called offset
+	7. This communication with queue is called PubSub model
+	
+Break from 11.35 to 11.50 PM!
+
+Kafka Vs Rabbitmq
+
+Kafka Terminologies
+
+Terminology						Rabbitmq		kafka
+Queue							Queue			Topic
+App writing data into queue		Publisher		Producer
+App Reading data from queue		Subscriber		Consumer
+Model							PubSub 			Producer-Consumer
+Message Delivery				Push mechanism	Pull Mechanism
+Offset management				Broker			Consumer
+														Topics->Partitions, Replication
+
+
+Topics->Partitions, Replication
+Consumer Group, Consumer Group Balancing
+
+Kafka runs on port 9092		-> bootstrap-server => 9092 port
+
+
+

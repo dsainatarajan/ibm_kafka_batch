@@ -1,0 +1,17 @@
+unzip prometheus_kafka.zip
+cd prometheus_kafka
+docker-compose up -d
+
+Browser on Ubuntu Linux: localhost:7071
+Browser on Ubuntu Linux: localhost:9090 => search for kafka
+Browser on Ubuntu Linux: localhost:3000 => Connection -> Add Connection -> Prometheus
+URL: http://prometheus:9090
+Click -> Save & Test
+Menu -> New Dashboard -> Import -> 11962 -> Load
+
+# https://grafana.com/grafana/dashboards/11962-kafka-metrics/
+
+
+
+
+

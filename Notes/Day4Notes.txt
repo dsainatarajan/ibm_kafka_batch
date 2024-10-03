@@ -1,0 +1,38 @@
+Day4:
+Kafka TOpic Administration
+Java Producer
+Java Consumer
+Java Advanced Producer settings
+Java Advanced Consumer Settings
+
+
+Our client is recommending to use Redpanda for messaging service, how it is differnet with kafka, can you please give some insights in upcoming sessions?
+
+
+Explicit Replica Assignemtn control is possible in kafka topic:
+
+kafka-topics.sh --create --bootstrap-server kafka1:9092 --topic test4 
+//					 P0  P1  P2
+--replica-assignment 1:2,3:2,3:1
+
+Break from 12.00 PM to 12.15 PM!
+
+https://kafka.apache.org/23/javadoc/org/apache/kafka/clients/producer/ProducerRecord.html
+
+ProducerRecord(String topic, V value)
+Create a record with no key
+
+ProducerRecord(String topic, K key, V value)
+Create a record to be sent to Kafka
+
+ProducerRecord(String topic, Integer partition, K key, V value)
+Creates a record to be sent to a specified topic and partition
+
+
+https://github.com/dsainatarajan/kafkacode
+
+
+
+
+
+

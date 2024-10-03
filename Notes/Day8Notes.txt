@@ -1,0 +1,102 @@
+Day8:
+Confluent Ksqldb
+Confluent Rest Proxy
+Confluent Schema Registry
+Kafka Security
+Kafka Connect
+
+
+Kafka Streams alternative		-> Spark Streaming, Storm
+Ksqldb: Is an exclusive feature available in the Confluent platfrom
+We can interact with Kafka using SQL language
+Components of Ksqldb -> Ksqldb Server, Ksqldb Client, SDK for programming language
+
+You can run SQL query on realtime streaming data
+
+KSQL DB stores data using Avro format, Avro format stores the data mapped to a schema
+
+SQL for kafka
+create a table mapped to a topic
+insert(produce) records, select(consume) records
+KSQL also supports streaming -> read data from one table(consume) and write results to another table(produce), both source & destination tables will be mapped to a corresponding topic
+Credit Card Fraud Alert System => more than 2 transactions in less than 30 sec
+-> flag as possible anomaly
+
+ksqldb internally uses Schema Registry for schema validations
+
+Below insert command will produce a message in the topic:
+
+INSERT INTO transactions (
+    email_address, card_number, tx_id, timestamp, amount
+) VALUES (
+    'michael@example.com',
+    '358579699410099',
+    'f88c5ebb-699c-4a7b-b544-45b30681cc39',
+    '2020-04-22T03:19:58',
+    50.25
+);
+Record<'f88c5ebb-699c-4a7b-b544-45b30681cc39', {'email_address': 'michael@example.com', 'card_number':'358579699410099','timestamp':'2020-04-22T03:19:58', 'amount': 50.25 }>
+
+
+KSQL: Exposes an SQL interface to Kafka topics & messages
+Create table	-> topic creation
+Producer		-> Insert QUery
+Consumer		-> Select QUery
+
+transactions -> Read data & result of the query will be inserted into anomaly table
+
+transactions -> Stream	=> Stores every event in the topic
+
+Anomaly		 -> Table	=> Stores only the latest information for a key in the topic
+
+Confluent Rest Proxy	-> REST Interface to interact with Kafka
+
+REST API protocol		-> http,https => Inefficient for large data transfer usecases
+mysql, postgresql, rabbitmq => custom tcp protocol
+	mysql://localhost:3306, s3://bucket_name/folder/file.txt
+Kafka does not directly expose REST API Interface because http, https are not efficient
+
+Kafka does not have REST endpoint -> It does not use http or https
+Kafka rest endpoint will not be high performance
+http: methods(GET,PUT,POST,DELETE)
+create -> POST			-> Producer
+READ   -> GET			-> Consumer
+DELETE -> DELETE(Not for deleting the message, deleting the connection->disconnecting)
+
+mysql://localhost:3306			-> Custom TCP Protocol
+mongodb://localhost:27017		-> Custom TCP Protocol
+kafka -> 9092
+
+Rest-proxy -> 8082
+
+Consumer:
+	1. Create the consumer object with properties	-> Register the consumer
+	2. Subscribe to the topic we want to consume from
+	3. Start polling broker for records
+
+Break from 12.04 to 12.20 PM!
+
+Confluent Schema Registry
+
+create table employee(id int(10), name varchar(30), address varchar(30));
+insert into employee values("one", "sai", "chennai");
+# this insert query should give error, non compatible data type for the ID field
+# expected int, got String
+
+Schema validation fails		-> Record is rejected
+
+If this kind of schema validation enforcement have to be given for a kafka topic, we can use Schema registry
+
+{"schema": 
+	{"type":"record",
+	"name":"Payment",
+	"namespace":"io.confluent.examples.clients.basicavro",
+	"fields":[
+		{"name":"id","type":"string"},
+		{"name":"amount","type":"double"}]
+	}
+}
+
+
+
+

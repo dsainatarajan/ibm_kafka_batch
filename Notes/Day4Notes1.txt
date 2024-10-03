@@ -1,0 +1,50 @@
+Day4:
+Zookeeper, Meta Store, Notification
+Zookeeper Cli Handson
+Java Simple Consumer
+Consumer group monitoring
+Advanced Topic management
+Kafka Installation 
+
+3 Node Zookeeper, 3 Node Kafka cluster
+Zookeeper: 
+	leader -> read & write
+	follower -> read, forward any write request to the leader
+
+1. Metadata store:
+	Broker list, topics list, partitions & replication, partition position, cluster ID, consumer group, etc
+2. Notification: watch mechanism
+
+3 Node zookeeper, 3 to 1000 brokers
+
+AWS Ec2:
+Public IP
+Private IP
+
+2018 to 2021 -> Development of kafka is done to remove zookeeper dependency
+kafka 3.0 -> since 2021 zookeeper is made optional. We can use either zookeeper or kafka
+	1. Zookeeper
+	2. Kraft
+	
+Zookeeper	-> Quorum based writes(majority of the followers should have comitted the data before the data is considered written)
+
+Gossip protocol: very fast notification
+
+Break from 11.25 AM to 11.40 AM!
+
+
+Kafka simple consumer java code
+
+Multiple topics with same type of messages -> order1,order2,order3
+
+
+Lag continously keeps increasing	-> Consumers are down or falling behind
+case1:
+	1. 4 Partitions & 2 Consumers, lag keeps increasing
+	Solution: Add 2 consumers
+Case2:
+	1. 4 Partitions & 4 Consumers, lag keeps increasing
+	Solution: Increasing # of partitions to 8, add 2 more consumers
+
+
+

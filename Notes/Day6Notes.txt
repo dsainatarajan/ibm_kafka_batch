@@ -1,0 +1,126 @@
+Day6:
+Java Advanced Consumer Settings
+Consumer group monitoring of Kafka clients
+Springboot kafka
+Kafka Streams
+Confluent Kafka
+
+
+Java Advanced Consumer Settings
+	i) Delivery Semantics, offset commit
+	ii) Batch Size
+	iii) Polling
+
+Delivery Semantics
+	i) Atmost Once
+	ii) Atleast Once
+	iii) Exactly Once
+Reading from specific partition & Offset
+
+
+https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html
+
+https://kafka.apache.org/11/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html
+
+
+Consumer offset commit:
+Default	-> Auto commit is enabled
+	properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+
+properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,"100"); -> batch size for consumer
+
+
+Atmost Once		-> Auto commit
+Atleast Once	-> Manual commit per batch
+Exactly Once	-> Manual commit per record
+Consumer:
+How messages are consumed by consumer can be one of the following
+	i) Atmost Once		-> Default(auto_commit=true, per batch auto commit)
+	ii) Atleast Once	-> auto_commit=false, per batch manual commit 
+							commit after processing all messages in the batch
+	iii) Exactly Once	-> auto_commit=false, Per Record manul commit
+
+Atmost Once:
+	properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+	ConsumerRecords<String,String> records = consumer.poll(Duration.ofMillis(100)); 
+	  for (ConsumerRecord<String, String> record : records)
+	  {
+			 System.out.printf("offset = %d, key = %s, value = %s\n", 
+					 record.offset(), record.key(), record.value());
+	  }
+	  
+Atleast Once:
+	properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+	ConsumerRecords<String,String> records = consumer.poll(Duration.ofMillis(100)); 
+	  for (ConsumerRecord<String, String> record : records)
+	  {
+			 System.out.printf("offset = %d, key = %s, value = %s\n", 
+					 record.offset(), record.key(), record.value());
+	  }
+	  consumer.commitSync();
+
+Exactly Once:
+	properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+	ConsumerRecords<String,String> records = consumer.poll(Duration.ofMillis(100)); 
+	  for (ConsumerRecord<String, String> record : records)
+	  {
+			 System.out.printf("offset = %d, key = %s, value = %s\n", 
+					 record.offset(), record.key(), record.value());
+			// offset commit per record
+			 consumer.commitSync(Collections.singletonMap(partitionReadFrom, 
+							  new OffsetAndMetadata(record.offset())));
+	  }
+
+
+
+
+
+Break from 11.46 to 12.01 PM!
+
+
+Consumer group monitoring of Kafka clients
+
+kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --all-groups --describe
+kafka-consumer-groups.sh --bootstrap-server kafka1:9092 --all-groups --list
+
+Scenario:
+4 Partitions, 2 consumers, Lag keeps increasing
+	-> Consumers are not able to keep up pace with the new messages received
+	-> Fix => Add 2 more consumers
+
+Scenario:
+4 Partitions, 4 consumers, Lag keeps increasing
+	-> Consumers are not able to keep up pace with the new messages received
+	-> Fix => i) First increase the number partitions in the topic to 8
+			  ii) Increase the number of consumers to 8
+		
+Spring Kafka:
+	Producer code:	
+@Service
+public class KafkaSender {
+	
+	@Autowired
+	private KafkaTemplate<String, String> kafkaTemplate;
+	
+	String kafkaTopic = "test";
+	
+	public void send(String data) {
+	    
+	    kafkaTemplate.send(kafkaTopic, data);
+	}
+}
+
+
+	Consumer Code:
+private CountDownLatch latch = new CountDownLatch(1);
+
+@KafkaListener(topics = "${test.topic}", groupId = "foo")
+public void receive(ConsumerRecord<?, ?> consumerRecord) {
+	LOGGER.info("received payload='{}'", consumerRecord.toString());
+	latch.countDown();
+}
+
+Spring Kafka
+https://medium.com/@prekshaan95/java-spring-boot-kafka-connection-setup-1f494df4eff4
+
+

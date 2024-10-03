@@ -1,0 +1,143 @@
+Day2:
+Kafka Architecture deep dive
+Kafka Topics, Partitions, replication
+Cli Producer, Consumer advanced settings
+Fault tolerance
+Consumer groups
+offsets
+Key Based routing, ordering
+broker down scenario, recovery from failure
+
+
+
+
+Fault tolerance:
+#numBrokerFailureWithstand = ReplicationFactor - 1
+
+
+Producers & Consumers can only write & read from leader partitions
+Neither producer nor consumer can connect to the follower partition to read or write data
+	Hence replicas do not provide any additional performance
+	Replicas are additional cost, but no additional performance. They solely exist for the fault tolerance
+Replicas need memory, storage, storage
+
+
+acks   -> Producer setting
+	0, 1, 2, all
+
+
+Break till 11.45 AM!
+
+Key Based routing, ordering
+
+Choice of key is very important, it determines
+	Message ordering(Messages with same key are guarenteed to go to the same partition)
+	Message distribution across partitions is skewed if some keys get too much information than others	
+
+Choose country code as key:  Skewed data distribution
+India: 100 million		-> P0
+UK:		10 million		-> P1
+
+Kafka Producer Record:
+ProducerRecord(String topic, V value)
+Create a record with no key
+
+ProducerRecord(String topic, K key, V value)
+Create a record to be sent to Kafka
+
+ProducerRecord(String topic, Integer partition, K key, V value)
+Creates a record to be sent to a specified topic and partition
+It is possible to override default routing algorithm , you can chose the partition to which a record should produced
+
+
+
+Records with null key will be routed randomly to any partition
+
+consumer.subscribe("orders*")
+orders1
+orders2
+
+
+Fault Tolerance & High Availability
+
+High Availability	-> System remains operational even under failing nodes
+Fault Tolerance		-> There is no loss of data because of partial failures
+
+kafka-topics.sh --create --bootstrap-server localhost:9092
+				--partitions 3
+				--replication-factor 1
+				--topic topic1
+									-> Replication factor 1 => not fault tolerant
+
+kafka-topics.sh --create --bootstrap-server localhost:9092
+				--partitions 3
+				--replication-factor 2
+				--topic topic1
+									-> Replication factor 2 => fault tolerance
+
+Leader partitions	-> Can send or receive data from producers & consumers
+follower partitions	-> Can neither send or receive data from producers & consumers, they solely exists only for the purpose redundancy & cannot connect to any clients. They do not provide any additional performance
+
+
+kafka-topics.sh --create --bootstrap-server broker1:9092,broker2:9092,broker3:9092
+				--partitions 3
+				--replication-factor 2
+				--topic topic1
+
+FaultTolerance = ReplicationFactor - 1
+ReplicationFactor = 2
+How many brokers can fail without losing data
+FaultTolerance	  = 2 -1 -> 1
+	At max one broker failure can be accomodated without data lose
+	
+More partitions				-> higher performance
+More replication-factor		-> higher fault tolerance
+
+
+
+Message Structure(key, value)
+	Every message is a record in kafka topic, it is made of 2 components key & value. Key is optional & when not used, it will take a default value of NULL
+	In Java, if you have used Hashmap then that is the way records are saved in the topic -> (Key,value) pair => Topic is simillar to a distributed hashmap
+
+What should be chosen as a key for a record
+
+Message Routing: There is a default message routing algorithm used by kafka
+
+TargetPartition# = HASH(key) % NumPartitions
+
+HASH -> murmur3
+
+message -> <"order1", "{'prod':'redmi 7', 'price': 10000, 'qty': 1 }">
+
+"order1"											-> key
+"{'prod':'redmi 7', 'price': 10000, 'qty': 1 }"		-> Value
+
+NumPartitions = 3
+
+TargetPartition# = HASH(key) % NumPartitions
+				 = HASH("order1") % NumPartitions
+				 = murmur3("order1") % 3
+				 = 3454361 % 3
+				 = 1
+
+message1 -> <"order1", "{'prod':'redmi 7', 'price': 10000, 'qty': 1 }">
+message2 -> <"order1", "{'prod':'iPhone 17', 'price': 200000, 'qty': 2 }">
+
+message1	-> Produced to partition1
+message2	-> Where will it get produced?
+	=> Messages with the same key will be produced to the same TargetPartition#
+	=> TargetPartition# is purely dependent on the key
+
+Consumer Groups
+
+Kafka ensures every consumer is assigned roughly equal number of messages
+Kafka will never assign same partition to more than one consumer in the same group
+One consumer can have one or more partitions assigned to it by kafka
+Kafka can ensure exactly once delivery of every message to a consumer group
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic1 --group grp1
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic1 --group grp1
+
+
+

@@ -1,0 +1,139 @@
+Day7:
+Springboot kafka
+Kafka Streams
+Confluent Kafka
+Confluent Control Center
+Confluent Ksqldb
+
+
+Producer:
+	Get API	-> message -> kafkaTemplate.send(message);
+	
+	curl http://localhost:8080/kafka/send?message=HelloWorld
+
+Consumer:
+	@KafkaListener(topic, groupID)
+		getMessage(ConsumerRecord rcd){
+		logger.log(rcd) 
+	}
+
+Kafka Streams		-> A stream processing application
+	Is built on the Java Streams API
+
+list.stream().map().filter().reduce()					-> Java Stream
+StreamBuilder(kafkaTopic).map().filter().reduce()		-> Kafka Streams
+Kafka Streams API is part of the core apache Kafka
+
+ETL Processing, Data Processing		-> Streams API is very helpful
+
+StreamApp => 
+	Input Topic	-> Processing		-> Result => Output Topic
+
+Consumer	-> DeSerializer
+Producer	-> Serializer
+StreamsApp	-> SerDe		=> Serializer+DeSerializer
+
+Break from 11.26 to 11.41 AM!
+
+SimplePipe		-> Read From Source Topic -> Write to Target Topic
+No Processing involved		=> Getting started exercise for Streams
+
+Transform Exercise:
+	Luxury Tax
+	Any transaction over 200 -> 10% tax
+
+key -> order1
+value -> 250
+
+map((k,v), pair(k, (v + v*0.1)))
+
+
+Kafka Stream Repo:
+https://github.com/dsainatarajan/kafkastreamsjava
+
+Kafka Streams -> Part of the apache(core) kafka
+Producer & Consumer API: We handle one record at a time
+Record by record processing will make it difficult for many processing requirements like
+	i) Group by 
+	ii) Group by with Aggregration(sum, avg, min, max, etc)
+	iii) Join operation
+	
+Streams API is very helpful for ETL type of data processing workloads
+
+stateless	-> Per Record processing =>map, filter, flatMap, etc
+Statefull	-> Windowing operation, grouping & aggregations on window 
+Adding/updating information from the past with new batch(information) is stateful operation -> to recover from a failure you need checkpoint(save) current state from some storage
+
+StringSerilizer
+StringDeSerilizer
+StringSerde			-> serialization & deserialization
+Kafka Streams works on top of the Java Streams
+
+Simple Per Record processing	-> map
+map function will get one record at a time as input and produces one output for each input
+
+List list1 = 1,2,3,4,5
+list1.map( oneVale -> oneVale*oneVale)
+
+filter  -> filter will retain(send to output) the values we want, remove values that are supporsed to be filtered out
+return value of the lambda logic should return a boolean
+if the bool value is true, current value is retained in the output
+if the bool value is false, current value is removed from the output
+
+
+List list1 = 1,2,3,4,5
+list1.filter( oneVale -> oneVale%2 == 0 )		-> retain even values
+output =>  2, 4
+1	-> 1%2 == 0 => output = false		-> removed 
+2	-> 2%2 == 0 => output = true		-> retained 
+3	-> 3%2 == 0 => output = false		-> removed 
+
+List list1 = 1,2,3,4,5
+list1.filter( oneVale -> oneVale%2 == 1 )		-> retain odd values
+output =>  1,3,5
+
+inputstream2 -> input topic
+
+https://github.com/dsainatarajan/kafkastreamsjava
+
+
+String.valueOf(Double.parseDouble(v.toString().trim())
+    		   +Double.parseDouble(v.toString().trim())*0.1))
+# 200	-> 200 + 200*0.10 => 200+20 -> 220
+
+
+Confluent Kafka
+Confluent Control Center
+
+Apache Kafka  -> Totally free for any purpose, no support
+Enterprise Kafka:
+	1. Cloudera
+	2. Confluent 
+	3. others
+Confluent:
+	Community edition: No support, can be used commercial
+	Enterprise edition: With support for a license fee
+		Single node is free
+	
+Confluent Kafka:
+Admin Web UI: Confluent Control Center
+	i) Ksqldb
+	ii) Rest Proxy
+	iii) Schema Registry
+
+
+
+Starting the confluent cluster:
+	Stop the Multinode Apache Kafka Cluster
+	Start the confluent kafka cluster
+Confluent control center
+
+
+
+
+
+
+
+
+
+

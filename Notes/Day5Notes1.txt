@@ -1,0 +1,18 @@
+Day5:
+Advanced Topic Management
+Singlenode Kafka Installation
+Springboot Kafka Producer & consumer
+
+
+Break from 11.50 to 12.05 PM!
+
+https://kafka.apache.org/downloads
+https://archive.apache.org/dist/kafka/
+
+Embedded Zookeeper with limited features are available inside kafka installation itself -> embedded zookeeper can only be used for kafka singlenode
+
+
+
+
+
+

@@ -1,0 +1,62 @@
+Day5:
+Java Consumer
+Java Advanced Producer settings
+Java Advanced Consumer Settings
+Kafka Streams
+
+
+
+Please proceed with Simple Java Producer handson
+
+properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		-> --from-beginning
+
+
+
+Break from 11.30 to 11.45 AM!
+
+//Set acknowledgements for producer requests.      
+props.put("acks", "all"); -> All replicas should be comitted to the disc before ack
+props.put("acks", "0");   -> Almost Fire & forget, leader received record in memory
+props.put("acks", "1");	  -> Leader comitted the record to the disc
+props.put("acks", "2");	  -> Leader+1 follower comitted record to disc
+
+
+props.put("acks", "all") + side effect from topic level property min.insync.replicas=2
+
+Topic with replication-factor=3
+acks=3
+leader + 2 replicas should commit data to disk -> ack sent producer
+At any cost, unless 3 copies are created irrespective of min.insync.replicas value always broker will give error if all 3 copies are not created
+
+
+Topic with replication-factor=3
+acks=all
+leader + 2 replicas should commit data to disk -> ack sent producer
+acks=all, is limitted to the value configured in the topic for min.insync.replicas
+
+min.insync.replicas=2, acks=all => if one partition is down, it is sufficient to create 2 copies(1leader+1follower) for the broker to send success ack
+
+idempotence=true
+	i) Message ordering is guarenteed even if record is produced async
+	ii) Duplicate records are rejected
+
+
+producer.send(record).get();		-> Blocking call & will make the produced wait until the ack for the record is received
+
+producer.send(record);		-> Async, once the send is triggered, you can continue to work on sending the next record. send is a non-blocking function
+
+
+producer.send(record new Callback(onCompletion()));		-> Async with error handling
+
+Throughput:
+sync send		-> 1000 msg/sec
+async send		-> > 2000 msg/sec
+
+https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html
+
+
+
+
+
+

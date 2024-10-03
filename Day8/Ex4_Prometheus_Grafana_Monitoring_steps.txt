@@ -1,0 +1,12 @@
+docker exec -it prometheuskafka_kafka_1 bash
+unset KAFKA_OPTS
+kafka-topics.sh --create --bootstrap-server kafka:9092 --partitions 2 --replication-factor 1 --topic sampletopic1
+kafka-console-producer.sh --bootstrap-server kafka:9092 --topic sampletopic1
+>record1
+>record2
+>msg3
+>order4
+>hello world
+
+Browser: Check the grafana dashboard
+# Total Topics: 1, Online Partitions: 2, Messages In Per Sec: 5+

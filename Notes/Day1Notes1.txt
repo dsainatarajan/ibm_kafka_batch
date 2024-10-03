@@ -1,0 +1,78 @@
+Event Driven Application with Kafka
+32 Hrs: 8 sessions of 4 hrs each
+ToC Walkthrough
+Trainer Intro: D Sai Natarajan, 15 Yrs
+Participant Intro: Yrs, Domain, Linux, Java, Springboot, MessageQueue, Kafka, Docker, Sql
+Special Expectations
+Mainly expecting -How we can use kafka in cloud in asyncronous communication specifically between the pods r b/w the services??
+knowledge & filtering the data from topic using kafka steams
+how to handle out of memory exceptions in streams
+
+D Sai Natarajan
+Yrs: 15yrs, Domain: Retail & Manufacturing, Linux: 10 Yrs(ubuntu, Centos), Java: 14yrs, Springboot:10yrs, microservices, MessageQueue: Activemq, Zmq, Rabbimq, Kafka: 10yrs, Apache, Confluent, Cloudera, Docker: 8 Yrs, Sql: 14 Yrs
+
+aliza: 8197903787
+aliza@alchemylearnsoft.com
+Sagar <sagar@abridgesolutions.net>, 
+
+
+Day1 Agenda:
+Message Queue
+Kafka Vs Rabbitmq
+Kafka Terminologies
+Kafka Architecture
+Kafka Topics, Partitions
+Cli Producer, Consumer
+
+
+Kafka: Opensource Message queue built from ground up for solving the scaling problem of message queue
+Enterprise ready: Java, massively parallel distributed architecture, very high scalability, high fault tolerance
+
+List of message: Activemq, Rabbitmq, Zmq, Ibm MQ, Kafka, Cloud, etc
+Advantages of Kafka:
+	1. Distributed: Scalability & Fault tolerance
+	2. Microservices: Exactly once delivery per consumer Group
+
+
+Terminologies:
+	1. Applications writing data into a queue is called Publisher
+	2. Applications reading data from a queue is called Subscriber
+	3. Messages are stored in a server application called Broker
+	4. Every record of data is called a message
+	5. Messages are stored in a sequence inside a Queue
+	6. Every message is tracked using a unique per message number called offset
+	7. This communication with queue is called PubSub model
+
+Push Model		-> Rabbimq
+
+
+Break from 11.51 to 12.06 PM!
+
+Message Ordering:
+	Key based routing
+	Within Partition message ordering is guarenteed
+
+Kafka Assigns every partition to one consumer in a consumer group
+
+Kafka Vs Rabbitmq
+
+Kafka Terminologies
+
+Terminology						Rabbitmq		kafka
+Queue							Queue			Topic
+App writing data into queue		Publisher		Producer
+App Reading data from queue		Subscriber		Consumer
+Model							PubSub 			Producer-Consumer
+Message Delivery				Push mechanism	Pull Mechanism
+Offset management				Broker			Consumer
+														Topics->Partitions, Replication
+
+
+Topics->Partitions, Replication
+Consumer Group, Consumer Group Balancing
+
+Kafka runs on port 9092		-> bootstrap-server => 9092 port
+
+
+
+

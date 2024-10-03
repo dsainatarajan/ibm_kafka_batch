@@ -1,0 +1,32 @@
+# On the browser access the below URL
+localhost:8082/topics
+localhost:8082/topics/ibmdemo
+
+# Launch a new terminal & run the below commands
+curl localhost:8082/topics
+curl localhost:8082/topics/ibmdemo
+
+docker exec -it broker bash
+# produce single messag with null key
+curl -X POST -H "Content-Type: application/vnd.kafka.json.v2+json"   --data '{"records":[{"value":{"foo":"bar"}}]}' "http://rest-proxy:8082/topics/ibmdemo"
+
+# produce 2 messages with key
+curl -X POST -H "Content-Type: application/vnd.kafka.json.v2+json"   --data '{"records":[{"key": "key1", "value":{"product":"redmi 7"}}, {"key": "key2", "value":{"product":"Oppo 10"}}]}' "http://rest-proxy:8082/topics/ibmdemo"
+
+# register a consumer
+curl -X POST -H "Content-Type: application/vnd.kafka.v2+json"  --data '{"name": "my_consumer_instance", "format": "json", "auto.offset.reset": "earliest"}'      http://rest-proxy:8082/consumers/my_json_consumer	  
+	  
+# Register for topic
+curl -X POST -H "Content-Type: application/vnd.kafka.v2+json" --data '{"topics":["ibmdemo"]}' http://rest-proxy:8082/consumers/my_json_consumer/instances/my_consumer_instance/subscription
+ 
+# consuming message from REST
+curl -X GET -H "Accept: application/vnd.kafka.json.v2+json" http://rest-proxy:8082/consumers/my_json_consumer/instances/my_consumer_instance/records	  
+
+# Disconnect the consumer
+curl -X DELETE -H "Content-Type: application/vnd.kafka.v2+json"  http://rest-proxy:8082/consumers/my_json_consumer/instances/my_consumer_instance
+
+exit
+
+# https://docs.confluent.io/platform/current/kafka-rest/quickstart.html
+	  
+	  

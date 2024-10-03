@@ -1,0 +1,59 @@
+# test.txt file should be in current folder where the command proment/terminal is pointing to
+Run all below commands on linux machine ubuntu01:
+ls /usr/kafka/config
+vi /usr/kafka/config/connect-standalone.properties
+bootstrap.servers=192.168.56.104:9092
+Esc:wq
+
+
+touch /usr/kafka/test.txt
+cd /usr/kafka/
+echo "{}" > test.txt
+
+# Create the topic
+kafka-topics.sh --create --bootstrap-server 192.168.56.104:9092 --replication-factor 1 --partitions 2 --topic connect-test
+
+kafka-topics.sh --list  --bootstrap-server 192.168.56.104:9092 
+
+connect-standalone.sh ./config/connect-standalone.properties   ./config/connect-file-source.properties   ./config/connect-console-sink.properties
+
+
+# Duplicate the putty session on 192.168.56.104:
+kafka-console-consumer.sh --bootstrap-server 192.168.56.104:9092 --topic connect-test --from-beginning
+
+# Duplicate the putty session on 192.168.56.104:
+nano /usr/kafka/test.txt
+{"name": "kafka training", "duration" : 32 }
+
+Ctrl+O+Enter
+Ctrl+X
+
+# Observe that the data saved in the file is printed on the connect console & the console consumer
+
+nano /usr/kafka/test.txt
+# leave the first line with {}, write below content to 2nd line
+{"name": "Zookeeper training", "duration" : 4 }
+
+Ctrl+O+Enter
+Ctrl+X
+
+nano /usr/kafka/test.txt
+# leave the existing lines, add below lines after existing content in file
+{"name": "Docker training", "duration" : 16 }
+{"name": "Kubernetes training", "duration" : 40 }
+{"name": "DevOps training", "duration" : 40 }
+{"name": "Microservices training", "duration" : 40 }
+
+Ctrl+O+Enter
+Ctrl+X
+
+cd /usr/kafka
+cat config/config/connect-file-sink.properties
+
+connect-standalone.sh ./config/connect-standalone.properties   ./config/connect-file-source.properties   ./config/connect-file-sink.properties
+
+# Duplicate putty session:
+cd /usr/kafka
+# Observe the sink file will have all the record
+cat test.sink.txt
+cat /tmp/connect.offsets

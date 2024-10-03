@@ -1,0 +1,36 @@
+Day7:
+Kafka Streams
+Confluent Kafka
+Confluent Control Center
+Rest Proxy
+Confluent Ksqldb
+
+
+Kafka Streams		-> group by & Aggregations, multi record processing
+Streams is a part of the core apache kafka
+Java8 or later -> Java stream 
+
+
+LuxuryTax of 10%  => OrderValue + OrderValue*.1
+ 
+https://github.com/dsainatarajan/kafkastreamsjava
+
+Break from 11.30 to 11.45 AM!
+
+https://docs.confluent.io/platform/current/get-started/platform-quickstart.html
+
+mysql://localhost:3306
+pg://
+mysql,pg		-> Custom TCP protocol for connecting to the endpoint
+http://			-> why not http?
+	http is a heavy protocol, is very inefficient for low latency high volume data access like required in the databases
+http, https are not suitable for databases & also not suitable for kafka
+
+REST: What is the protocol REST API -> http, https
+
+Request Types:
+GET			-> Read(consumer)
+POST		-> Create(producer)
+DELETE		-> Delete the Client connection
+
+

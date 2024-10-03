@@ -1,0 +1,84 @@
+Day6:
+Advanced Producer
+Advanced Consumer
+Kafka Streams
+Confluent Kafka
+Control Center
+Rest Proxy
+
+Async		-> Code does not wait for acknowledgement
+
+Fire & Forget:
+producer.send(record);		-> Async
+
+get()	-> Blocking function, blocks until the ack received from the broker
+producer.send(record).get();		-> Sync
+
+
+Async		-> High throughput	
+Sync		-> More reliable we are assured of message delivery
+
+I want the ack, but dont want to wait for it -> No block & wait
+# Async with ack
+producer.send(record, new Callback() {
+	public void onCompletion(RecordMetadata recordMetadata, Exception e){}})
+
+
+RecordMetadata		-> Topic, Partition, Offset, timestamp
+
+Record		-> 10 bytes
+tcp packet	-> 50 bytes
+
+Useful data  -> 10/(10+50)	=> 20% efficient
+Batching	=> Batch multiple records into a single request
+20 records	=> 200byts/250bytes => 80% efficient
+
+Enable batching in Producer:
+    //Specify buffer size in config
+    props.put("batch.size", 16384);
+    
+    //Reduce the no of requests less than 0   
+    props.put("linger.ms", 100);
+	
+flush  -> will immediately send the records that are currently produced
+
+    //Set acknowledgements for producer requests.      
+    props.put("acks", "all");
+	//props.put("acks", "0");
+	//props.put("acks", "1");
+	//props.put("acks", "2");
+    
+1. Batching(batch size & linger ms)
+2. acks(min.insync.replicas)
+3. Retry count
+4. Idempotence(Deduplication of records & message ordering guarentee)
+
+	//Enable Idempotence
+	props.put("enable.idempotence", "true");
+    
+enable.idempotence
+When set to ‘true’, the producer will ensure that exactly one copy of each message is written in the stream. If ‘false’, producer retries due to broker failures, etc., may write duplicates of the retried message in the stream. Note that enabling idempotence requires max.in.flight.requests.per.connection to be less than or equal to 5 (with message ordering preserved for any allowable value), retries to be greater than 0, and acks must be ‘all’.
+
+
+https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html
+						Latency			Ratio
+compressionAlgo1		5ms				90%  -> 10mb -> 9mb
+compressionAlgo2		15ms			60%  -> 10mb -> 6mb
+
+
+aliza: 8197903787
+aliza@alchemylearnsoft.com
+Sagar <sagar@abridgesolutions.net>, 
+Break from 11.25 AM to 11.40 AM!
+
+Consumer: Autocommit is enabled by default
+If autocommit is enabled, then consumer.commit() is not needed
+
+# It is possible to disable autocommit by below settings
+properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+
+# manual commit
+consumer.commit();
+
+
+

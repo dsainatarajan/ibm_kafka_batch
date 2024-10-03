@@ -1,0 +1,195 @@
+Day2:
+Handson for the ex1
+Partitions, Replication
+Message Structure(key, value)
+Message Routing
+Message Ordering
+Consumer Groups
+Advanced Producer & Consumer settings
+Consumer Group Coordinator, Rebalancing
+Offset
+Multinode Kafka
+Fault tolerance
+
+
+Please complete the Handson for the ex1 and enter done in the chat once finished
+A broker can hold one or more partitions from same or different topics
+Labs:
+	1. Single node kafka(1kafka, 1zookeeper)
+	2. Multinode kafka(3 Kafka brokers, 1 Zookeeper)
+	3. Confluent kafka
+Installation of Kafka on the linux base machine -> Demo only
+
+Fault Tolerance & High Availability
+
+High Availability	-> System remains operational even under failing nodes
+Fault Tolerance		-> There is no loss of data because of partial failures
+
+kafka-topics.sh --create --bootstrap-server localhost:9092
+				--partitions 3
+				--replication-factor 1
+				--topic topic1
+									-> Replication factor 1 => not fault tolerant
+
+kafka-topics.sh --create --bootstrap-server localhost:9092
+				--partitions 3
+				--replication-factor 2
+				--topic topic1
+									-> Replication factor 2 => fault tolerance
+
+Leader partitions	-> Can send or receive data from producers & consumers
+follower partitions	-> Can neither send or receive data from producers & consumers, they solely exists only for the purpose redundancy & cannot connect to any clients. They do not provide any additional performance
+
+
+kafka-topics.sh --create --bootstrap-server broker1:9092,broker2:9092,broker3:9092
+				--partitions 3
+				--replication-factor 2
+				--topic topic1
+
+FaultTolerance = ReplicationFactor - 1
+ReplicationFactor = 2
+How many brokers can fail without losing data
+FaultTolerance	  = 2 -1 -> 1
+	At max one broker failure can be accomodated without data lose
+	
+More partitions				-> higher performance
+More replication-factor		-> higher fault tolerance
+
+
+
+Message Structure(key, value)
+	Every message is a record in kafka topic, it is made of 2 components key & value. Key is optional & when not used, it will take a default value of NULL
+	In Java, if you have used Hashmap then that is the way records are saved in the topic -> (Key,value) pair => Topic is simillar to a distributed hashmap
+
+What should be chosen as a key for a record
+
+Message Routing: There is a default message routing algorithm used by kafka
+
+TargetPartition# = HASH(key) % NumPartitions
+
+HASH -> murmur3
+
+message -> <"order1", "{'prod':'redmi 7', 'price': 10000, 'qty': 1 }">
+
+"order1"											-> key
+"{'prod':'redmi 7', 'price': 10000, 'qty': 1 }"		-> Value
+
+NumPartitions = 3
+
+TargetPartition# = HASH(key) % NumPartitions
+				 = HASH("order1") % NumPartitions
+				 = murmur3("order1") % 3
+				 = 3454361 % 3
+				 = 1
+
+message1 -> <"order1", "{'prod':'redmi 7', 'price': 10000, 'qty': 1 }">
+message2 -> <"order1", "{'prod':'iPhone 17', 'price': 200000, 'qty': 2 }">
+
+message1	-> Produced to partition1
+message2	-> Where will it get produced?
+	=> Messages with the same key will be produced to the same TargetPartition#
+	=> TargetPartition# is purely dependent on the key
+
+Break from 11.16 to 11.31 AM!
+
+Consumer Groups
+
+Kafka ensures every consumer is assigned roughly equal number of messages
+Kafka will never assign same partition to more than one consumer in the same group
+One consumer can have one or more partitions assigned to it by kafka
+Kafka can ensure exactly once delivery of every message to a consumer group
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic1 --group grp1
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic1 --group grp1
+
+java -jar myapp.jar
+java -jar myapp.jar
+java -jar myapp.jar
+
+NumPartitions == Max number of Active consumers in the group
+
+If there are more consumers in the group than the number of partitions in the topic, then additional consumer will remain idle
+
+
+
+Partitions -> Partitions are for scalability
+		Partitions does not provide fault tolerance
+Replication -> Replication is for Fault Tolerance
+	Replication does not provide performance, neither producer nor consumer can read or write data to a follower replica
+
+Replication => Leader, follower
+
+	Producer & consumer can only write or read from the leader copy of the partition, replica cannot be connected to the clients(producer & consumer)
+
+Message: Is made of 2 components
+1. Key		-> can be any datatype, key is optional => Nullable
+2. Value	-> can be any datatype
+Messages are called as records -> Records have key & value
+Simillar to map or Hashmap
+Records => <key, Value>
+Message routing -> Messages with the same key will be produced to the same partition
+
+Messages with null key will be produced randomly to any partition
+
+
+
+I have no name@ret453654: 	=> pls ignore the "I Have no name"
+
+High Availability => If the system remains operational even under failing nodes, then the system considered fault tolerant or Highly available
+
+Number of brokers that can fail without losing data ReplicationFactor-1
+#NumBrokersThatCanFail = ReplicationFactor-1
+
+ReplicationFactor=1 => 1 broker failure will result in data loss
+#NumBrokersThatCanFail = 1-1
+ReplicationFactor=2 => 2 brokers should fail simultaneously for data loss
+#NumBrokersThatCanFail = 2-1
+Message Structure: key, value pair
+
+Message	-> Record => Will have 2 components -> (Key, value)
+Key is nullable(optional) -> records(messages) without key will be created with null values assigned to the key
+
+Record1 => <order1, '{"prd":"redmi6", "price":10000, "qty": 2}'>
+Key => order1
+Value => '{"prd":"redmi6", "price":10000, "qty": 2}'
+
+routing?
+targetPartition# = HASH(key)%NumPartitions
+
+targetPartition# = Murmur3('order1')%3
+                 = 345436 % 3
+				 = 0
+
+
+Record2 => <order1, '{"prd":"apple", "price":100000, "qty": 1}'>
+Key => order1
+Value => '{"prd":"apple", "price":100000, "qty": 1}'
+
+targetPartition# = Murmur3('order1')%3
+                 = 345436 % 3
+				 = 0
+
+
+
+If the key of the record is null, to which partition will the record be routed?
+	Record will be routed randomly to any partition
+
+bootstrap-server,broker		=> kafka		-> 9092
+zookeeper					-> 2181
+
+Kafka ensures every message is exactly delivered once per consumer group
+consumers in the same group will process unique data
+
+one of the brokers holding the partitions of the topic will take an additional role -> consumer group coordinator
+If a consumer in the group leaves(suddenly crashes), then the partition assigned to that failed consumer is no longer assigned to any valid consumer => kafka consumer group coordinator will rebalance the consumer group and it will assign the partition to one of the existing consumers in the consumer group
+
+
+
+
+
+
+
+
+
+

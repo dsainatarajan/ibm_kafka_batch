@@ -1,0 +1,76 @@
+Day8:
+Confluent Ksqldb
+Schema Registry
+Microservices Architecture
+	CQRS
+	Saga
+Kafka Monitoring(Prometheus, Grafana)
+Kafka Security
+Kafka Connect
+
+
+Ksql	-> SQL Integration for Kafka
+Select queries		-> Consumer(Read data)
+Insert Query		-> Producer(Write data)
+Kafka Records are immutable		-> Readonly
+	No Update or Delete supported
+Ksql has 2 components:
+	1. Ksqldb server
+	2. Ksql client
+The data is still stored as records in the kafka topic
+Ksqldb server	-> Metadata store & Sql interpreter, converts the user query into a producer or consumer API call
+
+transactions		-> 
+	insert into anomaly_table 
+		select count(*) as trnx_cnt on transactions group by card_num window(30sec) where trnx_cnt >= 3;
+
+
+Break from 11.20 to 11.35 AM!
+
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json"  --data '{"schema": "{\"type\":\"record\",\"name\":\"Payment\",\"namespace\":\"io.confluent.examples.clients.basicavro\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"double\"}]}"}'   http://schema-registry:8081/subjects/payment-schema/versions
+
+
+{"schema": 		
+	{"type":"record",
+	"name":"Payment",
+	"namespace":"io.confluent.examples.clients.basicavro",
+	"fields": [
+		{"name":"id","type":"string"},
+		{"name":"amount","type":"double"}]
+	}
+}
+
+
+{
+	"type":"record",
+	"name":"Payment",
+	"namespace":"io.confluent.examples.clients.basicavro",
+	"fields":[
+		{"name":"id","type":"string"},
+		{"name":"amount","type":"double"},
+		{"name":"region","type":"string","default":""} ]
+	}
+}
+
+region	-> default value ""  => Optional field
+id, amount -> there is no default   => mandatory field
+
+
+Microservices Architecture
+	CQRS	-> Command Query Responsibility Segregation
+	Saga	-> Distributed Eventually Consistent Transactions
+					Compensating Transaction
+					
+Single Database -> Transactions can be atomic
+	Failed transactions can be rolled back
+Every message -> Event
+
+Whole system operates on the messages(events)
+
+https://www.confluent.io/hub/
+
+
+	
+
+
+
