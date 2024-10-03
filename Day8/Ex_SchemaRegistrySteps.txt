@@ -1,0 +1,48 @@
+Browser: localhost:8081
+
+On a new Terminal to ubuntu VM:
+curl localhost:8081
+docker exec -it broker bash
+# Create a new schema by sending a POST request
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json"  --data '{"schema": "{\"type\":\"record\",\"name\":\"Payment\",\"namespace\":\"io.confluent.examples.clients.basicavro\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"double\"}]}"}'   http://schema-registry:8081/subjects/payment-schema/versions
+
+Browser: 
+http://localhost:8081/schemas
+
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" --data '{"schema": "{\"type\":\"record\",\"name\":\"Payment\",\"namespace\":\"io.confluent.examples.clients.basicavro\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"double\"},{\"name\":\"region\",\"type\":\"string\",\"default\":\"\"}]}"}'   http://schema-registry:8081/subjects/transactions1-value/versions
+  
+kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic payment
+
+# list topic
+kafka-topics --list --bootstrap-server localhost:9092
+
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json"  --data '{"schema": "{\"type\":\"record\",\"name\":\"Payment\",\"namespace\":\"io.confluent.examples.clients.basicavro\",\"fields\":[{\"name\":\"id\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"double\"}]}"}'   http://schema-registry:8081/subjects/payment-value/versions
+
+exit
+docker exec -it schema-registry  bash
+
+export LOG_DIR=/home/appuser/logs
+mkdir /home/appuser/logs
+# starting the avro producer
+kafka-avro-console-producer --bootstrap-server broker:29092 --topic payment --property schema.registry.url=http://schema-registry:8081 --property value.schema='{"type":"record", "name":"Payment", "fields":[{"name":"id","type":"string"},{"name":"amount","type":"double"}] }'
+{"id": "1", "amount":1000.5}
+{"id": "2", "amount":5000.5}
+{"id": "3", "amount":1500.5}
+{"id": "2", "amount":"5000.5"}
+# the above record will fail the schema validation, producer will crash
+# amount field, 5000.5 is enclosed in the "5000.5" -> type incompability
+
+# export LOG_DIR=/home/appuser/logs
+
+kafka-avro-console-consumer --topic payment --bootstrap-server broker:29092 --property schema.registry.url=http://localhost:8081 --from-beginning
+# observe the record with invalid schema is not received because it was never successfully produced
+
+# Open a new terminal putty:
+
+docker exec -it broker bash
+
+kafka-console-producer --bootstrap-server localhost:9092 --topic payment
+>Invalid record
+# instantly the avro consumer will crash because of receiving the invlid record
+
+
